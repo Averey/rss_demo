@@ -3,11 +3,18 @@ name = "db_derive"
 version = "0.1.0"
 edition = "2021"
 
+
+# [test]
+# name = "test"
+# path = "/tests/"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
 proc-macro = true
 
 [dependencies]
-syn = "1.0"
+syn = {version = "2.0", features = ["extra-traits"]}
 quote = "1.0"
+proc-macro2 = "1.0.83"
+db = { path = "../db" }
+
