@@ -34,19 +34,19 @@ impl Channel {
         }
     }
 
-    pub fn save() -> Result {
-        let sql = "INSERT OR REPLACE INTO channel (
-      title,
-      link,
-      description,
-      pub_date,
-      last_build_date,
-      is_proxy,
-      etag,
-      last_modified
-    ) VALUES ( ?1, ?2, ?3, ?4, ?4, ?6, ?7, ?8)
-    ";
-    }
+    //pub fn save() -> Result {
+    //    let sql = "INSERT OR REPLACE INTO channel (
+    //  title,
+    //  link,
+    //  description,
+    //  pub_date,
+    //  last_build_date,
+    //  is_proxy,
+    //  etag,
+    //  last_modified
+    //) VALUES ( ?1, ?2, ?3, ?4, ?4, ?6, ?7, ?8)
+    //";
+    //}
 
     pub fn creat_table(conn: &Connection) -> Result<usize, rusqlite::Error> {
         let sql = "CREATE TABLE IF NOT EXISTS channel (

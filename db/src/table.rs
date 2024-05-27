@@ -1,9 +1,9 @@
 use rusqlite::{Connection, Result};
 
 pub struct TableCol {
-    name: String,
-    data_type: String,
-    constraint: Option<Vec<String>>,
+    pub name: String,
+    pub data_type: String,
+    pub constraint: Option<Vec<String>>,
 }
 
 //pub struct TableInfo {
@@ -55,6 +55,18 @@ impl<'a> DbTable<'a> {
             None => return Err(""),
         };
     }
+
+    //pub fn exec_sql(&self, &sql) -> Result<> {
+    //    let conn = self.conn.unwrap();
+    //    let mut stmt = conn.prepare(sql)?;
+    //    let rows = stmt.query(())?;
+    //    let mut name = Vec::new();
+    //    while let Some(row) = rows.next()? {
+    //        name.push(row.get(0)?);
+    //    }
+    //
+    //
+    //}
 }
 
 //pub trait DbTable {
