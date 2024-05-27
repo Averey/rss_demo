@@ -1,26 +1,48 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{self};
+use syn::{parse_macro_input, DeriveInput};
 
-#[proc_macro_derive(TableMacro)]
+#[proc_macro_derive(Table, attributes(col))]
 pub fn table_macro_derive(input: TokenStream) -> TokenStream {
-    // Construct a representation of Rust code as a syntax tree
-    // that we can manipulate
-    let ast = syn::parse(input).unwrap();
+    let ast = parse_macro_input!(input as DeriveInput);
+    //eprintln!("{:#?}", ast);
+    let ident = &ast.ident;
 
-    // Build the trait implementation
-    impl_table_macro(&ast)
-}
+    let fields = if let syn::Data::Struct(syn::DataStruct {
+        fields: syn::Fields::Named(syn::FieldsNamed { ref named, .. }),
+        ..
+    }) = ast.data
+    {
+        named
+    } else {
+        unimplemented!();
+    };
 
-fn impl_table_macro(ast: &syn::DeriveInput) -> TokenStream {
-    let name = &ast.ident;
-    let gen = quote! {
-        impl TableMacro for #name {
-            fn table_name() {
-                println!("table name: {}", stringify!(#name));
-            }
+    //fields.iter().for_each(|f| {
+    //    let attr = f.attrs
+    //
+    //});
+
+    let fstr = fields
+        .iter()
+        .map(|f| {
+            let name = &f.ident;
+            name.as_ref().unwrap().to_string()
+        })
+        .collect::<Vec<String>>();
+
+    //eprintln!("{:#?}", fields);
+    eprintln!("{:#?}", fstr);
+
+    let expanded = quote! {
+
+        //use db_derive::table::DbTable;
+        //
+        //
+        impl db::table::DbTable for #ident
+        {
 
         }
     };
-    gen.into()
+    expanded.into()
 }
