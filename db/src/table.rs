@@ -6,11 +6,6 @@ pub struct TableCol {
     pub constraint: Option<Vec<String>>,
 }
 
-//pub struct TableInfo {
-//    name: String,
-//    cols: Vec<TableCol>,
-//}
-
 pub struct DbTable<'a> {
     conn: Option<&'a Connection>,
     name: String,
@@ -23,37 +18,33 @@ impl<'a> DbTable<'a> {
         self
     }
 
-    pub fn new(name: String, cols: Vec<TableCol>) -> Self {
+    pub fn new(name: &str, cols: Vec<TableCol>) -> Self {
         Self {
-            name,
+            name: name.to_string(),
             cols,
             conn: None,
         }
     }
 
-    pub fn create_table(&self) -> Result<(), &'static str> {
-        let mut cols_str = String::new();
+    pub fn create_table(&self) -> Result<&Self, Box<dyn std::error::Error>> {
+        let mut cols = Vec::<String>::new();
         self.cols.iter().for_each(|c| {
-            let mut constraints = String::new();
+            let mut constraint = String::new();
             if let Some(ctns) = &c.constraint {
-                constraints = ctns.join(" ");
-            } else {
+                constraint = ctns.join(" ");
             }
-            let col = format!("{} {} {}", c.name, c.data_type, constraints);
-            cols_str.push_str(&col);
+            let col = format!("{} {} {}", c.name, c.data_type, constraint);
+            cols.push(col)
         });
+        let sql = format!(
+            "CREATE TABLE IF NOT EXISTS {} ({})",
+            &self.name,
+            cols.join(",")
+        );
 
-        let sql = format!("CREATE TABLE IF NOT EXISTS {} ({})", &self.name, cols_str);
-        match &self.conn {
-            Some(ref conn) => {
-                if conn.execute(&sql, ()).is_ok() {
-                    return Ok(());
-                } else {
-                    return Err("");
-                }
-            }
-            None => return Err(""),
-        };
+        eprintln!("{:?}", &sql);
+        self.conn.ok_or("conn is None")?.execute(&sql, ())?;
+        Ok(self)
     }
 
     //pub fn exec_sql(&self, &sql) -> Result<> {
