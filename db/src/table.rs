@@ -37,13 +37,14 @@ impl<'a> DbTable<'a> {
             let mut constraints = String::new();
             if let Some(ctns) = &c.constraint {
                 constraints = ctns.join(" ");
-            } else {
             }
             let col = format!("{} {} {}", c.name, c.data_type, constraints);
             cols_str.push_str(&col);
         });
 
         let sql = format!("CREATE TABLE IF NOT EXISTS {} ({})", &self.name, cols_str);
+        eprintln!("sql:-----");
+        eprintln!("{}", sql);
         match &self.conn {
             Some(ref conn) => {
                 if conn.execute(&sql, ()).is_ok() {

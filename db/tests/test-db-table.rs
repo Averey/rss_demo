@@ -1,6 +1,5 @@
-use rusqlite::Connection;
-//mod db::table;
 use db::table::{DbTable, TableCol};
+use rusqlite::Connection;
 
 #[test]
 fn create() -> Result<(), &'static str> {
