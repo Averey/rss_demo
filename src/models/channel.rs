@@ -49,6 +49,7 @@ impl Channel {
         let headers = res.headers().clone();
         let conent = res.bytes().await?;
         let c = rss::Channel::read_from(&conent[..])?;
+        println!("subscribe for {link}");
         Ok(Channel {
             id: None,
             //title: if title.is_some() {title.unwrap().to_string()} else {c.title},
