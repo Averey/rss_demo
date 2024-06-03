@@ -1,4 +1,4 @@
-use reqwest::header::{HeaderMap};
+use reqwest::header::HeaderMap;
 use rusqlite::{named_params, Connection};
 
 use crate::db::Table;
@@ -50,7 +50,7 @@ impl Channel {
         let conent = res.bytes().await?;
         let c = rss::Channel::read_from(&conent[..])?;
         println!("subscribe for {link}");
-        Ok(Channel {
+        let channel = Channel {
             id: None,
             //title: if title.is_some() {title.unwrap().to_string()} else {c.title},
             title: match title { Some(t) => t.to_string(), None => c.title},
@@ -63,8 +63,15 @@ impl Channel {
             is_proxy,
             etag: get_header_value(&headers, "etag"),
             last_modified: get_header_value(&headers, "last-modified"),
-        })
+        };
+        Ok(channel)
     }
+
+    pub fn update(&self) {
+
+
+    }
+
 }
 
 impl Table<Channel> for Channel {
@@ -82,6 +89,11 @@ impl Table<Channel> for Channel {
             )";
         conn.execute(&sql, ())
     }
+
+    //fn get(conn: &Connection, id: &str) -> Result<Channel, rusqlite::Error> {
+    //    let mut smt = conn.prepare("SELECT * from channel WHERE id ")
+    //
+    //}
 
     fn upsert(conn: &Connection, data: &Channel) -> rusqlite::Result<usize, rusqlite::Error> {
         let mut stmt = conn.prepare(
